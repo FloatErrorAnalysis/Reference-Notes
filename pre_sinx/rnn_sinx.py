@@ -4,8 +4,9 @@ import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 training_examples = 10000
-test_examples = 1000
+testing_examples = 1000
 # gap of sinx
 sample_gap = 0.01
 time_steps = 20
@@ -32,7 +33,7 @@ def generate_data(seq):
 test_start = training_examples * sample_gap
 test_end = training_examples * sample_gap + test_start
 train_X, train_y = generate_data(np.sin(np.linspace(0, test_start, training_examples)))
-test_X, test_y = generate_data(np.sin(np.linspace(test_start, test_end, training_examples)))
+test_X, test_y = generate_data(np.sin(np.linspace(test_start, test_end, testing_examples)))
 
 
 # Set the size, output
@@ -67,7 +68,7 @@ def get_batches(X, y, batch_size = 64):
         begin_i = i
         end_i = i + batch_size if i + batch_size < len(X) else len(X)
 
-    yield X[begin_i: end_i], y[begin_i: end_i]
+        yield X[begin_i: end_i], y[begin_i: end_i]
 
 
 def inner_point():
@@ -81,13 +82,21 @@ times = 100
 with session.as_default() as ss:
     tf.global_variables_initializer().run()
     iteration = 1
-    for e in range(1, echos * times):
+    for e in range(echos):
         for xs, ys in get_batches(train_X, train_y, batch_size):
             feed_dict = {x: xs[:, :, None], y: ys[:, None], keep_prob:.5}
-           # inner_point()
             loss, _ = ss.run([cost, optimizer], feed_dict=feed_dict)
             if iteration % times == 0:
-                print('Epochs:{}/{}'.format(e, echos * training_examples),
+                print('Epochs:{}/{}'.format(e, echos),
                       'Iteration:{}'.format(iteration),
                       'Train loss: {:.8f}'.format(loss))
             iteration += 1
+
+with session.as_default() as ss:
+    feed_dict = {x: test_X[:,:,None], keep_prob: 1.0}
+    results = ss.run(predictions, feed_dict=feed_dict)
+    plt.plot(results, 'r', label='predicted')
+    plt.plot(test_y,  'g--', label='real sin')
+    plt.legend()
+    plt.savefig('1')
+    plt.show()

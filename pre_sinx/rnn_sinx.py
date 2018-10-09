@@ -1,3 +1,5 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 import numpy as np
 import matplotlib.pyplot as plt
@@ -60,12 +62,16 @@ cost = tf.losses.mean_squared_error(y, predictions)
 optimizer = tf.train.AdamOptimizer().minimize(cost)
 
 
-def get_baches(X, y, batch_size = 64):
+def get_batches(X, y, batch_size = 64):
     for i in range(0, len(X), batch_size):
         begin_i = i
         end_i = i + batch_size if i + batch_size < len(X) else len(X)
 
     yield X[begin_i: end_i], y[begin_i: end_i]
+
+
+def inner_point():
+    print('***')
 
 
 # Train
@@ -76,10 +82,13 @@ with session.as_default() as ss:
     tf.global_variables_initializer().run()
 
     for e in range(0, echos):
-        for xs, ys in get_baches(train_X, train_y, bath_size):
+        for xs, ys in get_batches(train_X, train_y, bath_size):
+           # inner_point()
             feed_dict = {x: xs[:, :, None], y: ys[:, None], keep_prob:.5}
-
+           # inner_point()
             loss, _ = ss.run([cost, optimizer], feed_dict=feed_dict)
+            print('loss: ' + str(loss))
+
             if iteration % 100 == 0:
                 print('Epochs:{}/{}'.format(e, echos),
                       'Iteration:{}'.format(iteration),

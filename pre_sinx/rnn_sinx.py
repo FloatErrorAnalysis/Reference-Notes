@@ -38,7 +38,7 @@ test_X, test_y = generate_data(np.sin(np.linspace(test_start, test_end, training
 # Set the size, output
 lstm_size = 30
 lstm_layers = 2
-bath_size = 64
+batch_size = 64
 
 x = tf.placeholder(tf.float32, [None, time_steps, 1], name='input_x')
 y = tf.placeholder(tf.float32, [None, 1], name='input_y')
@@ -77,20 +77,17 @@ def inner_point():
 # Train
 echos = 20
 session = tf.Session()
-iteration = 1
+times = 100
 with session.as_default() as ss:
     tf.global_variables_initializer().run()
-
-    for e in range(0, echos):
-        for xs, ys in get_batches(train_X, train_y, bath_size):
-           # inner_point()
+    iteration = 1
+    for e in range(1, echos * times):
+        for xs, ys in get_batches(train_X, train_y, batch_size):
             feed_dict = {x: xs[:, :, None], y: ys[:, None], keep_prob:.5}
            # inner_point()
             loss, _ = ss.run([cost, optimizer], feed_dict=feed_dict)
-            print('loss: ' + str(loss))
-
-            if iteration % 100 == 0:
-                print('Epochs:{}/{}'.format(e, echos),
+            if iteration % times == 0:
+                print('Epochs:{}/{}'.format(e, echos * training_examples),
                       'Iteration:{}'.format(iteration),
                       'Train loss: {:.8f}'.format(loss))
             iteration += 1

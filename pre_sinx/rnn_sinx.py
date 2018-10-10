@@ -93,10 +93,11 @@ with session.as_default() as ss:
             iteration += 1
 
 with session.as_default() as ss:
-    feed_dict = {x: test_X[:,:,None], keep_prob: 1.0}
+    feed_dict = {x: test_X[:, :, None], keep_prob: 1.0}
     results = ss.run(predictions, feed_dict=feed_dict)
     plt.plot(results, 'r', label='predicted')
     plt.plot(test_y,  'g--', label='real sin')
     plt.legend()
     plt.savefig('1')
     plt.show()
+

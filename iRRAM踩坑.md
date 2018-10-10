@@ -1,0 +1,2 @@
+# iRRAM踩坑
+官方2013release版对mac os不友好，无法编译，所以直接在git上down下来，quick install的默认路径也是需要加上的否则无法通过配置

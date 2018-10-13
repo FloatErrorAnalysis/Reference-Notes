@@ -105,3 +105,12 @@ venv.bak/
 *.xml
 *.iml
 前景与范围.pdf
+
+# IntelliJ IDEA
+.idea
+*.iws
+*.iml
+*.ipr
+
+# Mac
+.DS_Store
